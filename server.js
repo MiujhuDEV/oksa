@@ -45,8 +45,31 @@ app.get('/player', (req, res) => {
       <title>Stream Player</title>
       <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
       <style>
-        body { margin: 0; padding: 0; background: #000; }
-        .video-js { width: 100vw; height: 100vh; }
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 100vw;
+          height: 100vh;
+          min-width: 100vw;
+          min-height: 100vh;
+          overflow: hidden; /* Prevent scrollbars */
+          overscroll-behavior: none; /* Prevent scroll bounce */
+          background: #000;
+        }
+        .video-js {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw !important;
+          height: 100vh !important;
+          max-width: 100vw;
+          max-height: 100vh;
+        }
+        .vjs-tech {
+          width: 100vw !important;
+          height: 100vh !important;
+          object-fit: contain; /* Ensure video fits without stretching */
+        }
       </style>
     </head>
     <body>
@@ -56,7 +79,7 @@ app.get('/player', (req, res) => {
       <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
       <script>
         var player = videojs('player', {
-          fluid: true,
+          fluid: false, /* Disable fluid mode to respect fixed dimensions */
           responsive: true,
           playbackRates: [0.5, 1, 1.5, 2],
           html5: {
