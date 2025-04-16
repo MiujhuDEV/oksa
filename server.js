@@ -29,28 +29,6 @@ app.use(morgan('tiny'));
 // Cache for .m3u8 and segment URLs (15s TTL)
 const cache = new NodeCache({ stdTTL: 15, checkperiod: 7 });
 
-// Restrict embedding to telewizjada.xyz
-app.use((req, res, next) => {
-  res.set('Access-Control-Allow-Origin', 'https://telewizjada.xyz');
-  res.set('Access-Control-Allow-Methods', 'GET');
-  res.set('Access-Control-Max-Age', '86400');
-  res.set('X-Frame-Options', 'SAMEORIGIN');
-  res.set('Content-Security-Policy', "frame-ancestors 'self' https://telewizjada.xyz");
-  next();
-});
-
-// Block VLC and direct access
-app.use((req, res, next) => {
-  const userAgent = req.headers['user-agent'] || '';
-  if (userAgent.includes('VLC') || userAgent.includes('LibVLC')) {
-    return res.status(403).send('Access denied for VLC clients');
-  }
-  if (!req.get('Referer') || !req.get('Referer').includes('telewizjada.xyz')) {
-    return res.status(403).send('Direct access not allowed. Please use embed from telewizjada.xyz');
-  }
-  next();
-});
-
 // Ping endpoint to keep server alive
 app.get('/ping', (req, res) => {
   res.status(200).send('OK');
